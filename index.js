@@ -90,6 +90,69 @@ app.get("/author/book/:isbn", (req, res) => {
   res.json({ author: getSpecificAuthors });
 });
 
+// get all publication
+
+app.get("/publications", (req, res) => {
+  res.json({ publication: database.publication });
+});
+
+//specific publication
+
+app.get("/publication/:id", (req, res) => {
+  const getPublication = database.publication.filter((publication) => {
+    return publication.id === parseInt(req.params.id);
+  });
+
+  if (getPublication.length === 0) {
+    return res.json({ error: `No Publication found ${req.params.id}` });
+  }
+
+  res.json({ author: getPublication });
+});
+
+// get publication based on book
+app.get("/publication/book/:id", (req, res) => {
+  const getSpecificPublication = database.publication.filter((publication) =>
+    publication.books.includes(parseInt(req.params.id))
+  );
+
+  if (getSpecificPublication.length === 0) {
+    return res.json({ error: "No publication found" });
+  }
+
+  res.json({ author: getSpecificPublication });
+});
+
+// Add new book
+
+app.post("/book/new", (req, res) => {
+  const { newBook } = req.body;
+  database.books.push(newBook);
+  return res.json({ books: database.books, message: "book was added" });
+});
+
+// Add new author
+
+app.post("/author/new", (req, res) => {
+  const { newAuthor } = req.body;
+  database.authors.push(newAuthor);
+  return res.json({ books: database.authors, message: "Author was added" });
+});
+
+// Update Book
+
+app.put("/book/:isbn", (req, res) => {
+  database.books.forEach((book) => {
+    if (book.ISBN === req.params.isbn) {
+      book.title = req.body.bookTitle;
+      return;
+    }
+  });
+  return res.json({ books: database.books });
+});
+
+//Server
+
 app.listen(port, () => {
   console.log(`Server is running on ${port}`);
 });
