@@ -1,0 +1,19 @@
+// Requirements
+
+// We need an API
+// to get all books
+// to get specific book
+// to get a list of books based on category
+// to get a list of books based on autor
+
+//Author
+
+// to get all authors
+// specific author
+// list of book based on autor
+
+//publication
+
+// to get all publication
+// specific publication
+// list of book based on publication
