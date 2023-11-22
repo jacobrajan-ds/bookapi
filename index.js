@@ -74,6 +74,14 @@ app.get("/a/:author", (req, res) => {
   res.json({ book: getSpecificAuthor });
 });
 
+// Delete a book
+
+app.delete("/:isbn", async (req, res) => {
+  const updatedBookDatabase = await BookModel.findOneAndDelete({
+    ISBN: req.params.isbn,
+  });
+});
+
 /********** Authors ************/
 
 // get all authors
@@ -107,6 +115,45 @@ app.get("/author/book/:isbn", async (req, res) => {
   }
 
   res.json({ author: getSpecificAuthors });
+});
+
+// update author
+
+app.put("/book/author/update/:isbn", async (req, res) => {
+  const updatedBook = await BookModel.findOneAndUpdate(
+    {
+      ISBN: req.params.isbn,
+    },
+    {
+      $push: {
+        authors: req.body.newAuthor,
+      },
+    },
+    {
+      new: true,
+    }
+  );
+
+  const updatedAuthor = await AuthorModel.findOneAndUpdate(
+    {
+      id: req.body.newAuthor,
+    },
+    {
+      $addToSet: {
+        books: req.params.isbn,
+      },
+    },
+
+    {
+      new: true,
+    }
+  );
+
+  return res.json({
+    books: updatedBook,
+    authors: updatedAuthor,
+    message: "New Author was added",
+  });
 });
 
 /********** Publication ************/
