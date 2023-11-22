@@ -1,11 +1,23 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
+const mongoose = require("mongoose");
 
 const database = require("./database/index");
 
 const port = 3000;
 
 app.use(express.json());
+
+//Database connection
+
+mongoose
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+  })
+  .then(() => {
+    console.log("Database Connected");
+  });
 
 // get all books
 
